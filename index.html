@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tam Özellikli YouTube Video/Ses İndirici</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f3f4f6; /* gray-100 */
+            --bg-secondary: #ffffff; /* white */
+            --bg-tertiary: #e5e7eb; /* gray-200 */
+            --text-primary: #1f2937; /* gray-800 */
+            --text-secondary: #4b5563; /* gray-600 */
+            --text-muted: #9ca3af; /* gray-400 */
+            --border-color: #d1d5db; /* gray-300 */
+            --input-bg: #ffffff;
+            --input-border: #d1d5db;
+            --input-focus-ring: rgba(59, 130, 246, 0.5);
+            --btn-primary-bg: #ef4444; /* red-500 */
+            --btn-primary-hover-bg: #dc2626; /* red-600 */
+            --btn-secondary-bg: #3b82f6; /* blue-500 */
+            --btn-secondary-hover-bg: #2563eb; /* blue-600 */
+            --btn-tertiary-bg: #6b7280; /* gray-500 */
+            --btn-tertiary-hover-bg: #4b5563; /* gray-600 */
+            --info-box-bg: #eff6ff;
+            --info-box-border: #3b82f6;
+            --info-box-text: #1e40af;
+            --warning-box-bg: #fff7ed;
+            --warning-box-border: #f97316;
+            --warning-box-text: #9a3412;
+            --gemini-box-bg: #f0fdfa;
+            --gemini-box-border: #10b981;
+            --gemini-box-text: #065f46;
+            --success-box-bg: #f0fdf4; 
+            --success-box-border: #22c55e; 
+            --success-box-text: #15803d; 
+            --shadow-color: rgba(0,0,0,0.1);
+            --modal-overlay-bg: rgba(0, 0, 0, 0.5);
+
+            /* Animasyonlu Arka Plan Renkleri (Açık Tema) */
+            --anim-grad-color1: hsla(217, 71%, 53%, 0.08); /* Mavi tonu, düşük opaklık */
+            --anim-grad-color2: hsla(0, 84%, 60%, 0.07);   /* Kırmızı tonu, düşük opaklık */
+            --anim-grad-color3: hsla(160, 100%, 37%, 0.08);/* Zümrüt tonu, düşük opaklık */
+        }
+
+        .dark-mode {
+            --bg-primary: #111827; /* gray-900 */
+            --bg-secondary: #1f2937; /* gray-800 */
+            --bg-tertiary: #374151; /* gray-700 */
+            --text-primary: #f3f4f6; /* gray-100 */
+            --text-secondary: #d1d5db; /* gray-300 */
+            --text-muted: #6b7280; /* gray-500 */
+            --border-color: #4b5563; /* gray-600 */
+            --input-bg: #374151; /* gray-700 */
+            --input-border: #4b5563; /* gray-600 */
+            --input-focus-ring: rgba(96, 165, 250, 0.5);
+            --btn-primary-bg: #f87171; /* red-400 */
+            --btn-primary-hover-bg: #ef4444; /* red-500 */
+            --btn-secondary-bg: #60a5fa; /* blue-400 */
+            --btn-secondary-hover-bg: #3b82f6; /* blue-500 */
+            --btn-tertiary-bg: #9ca3af; /* gray-400 */
+            --btn-tertiary-hover-bg: #6b7280; /* gray-500 */
+            --info-box-bg: #1e3a8a;
+            --info-box-border: #60a5fa;
+            --info-box-text: #bfdbfe;
+            --warning-box-bg: #7c2d12;
+            --warning-box-border: #fb923c;
+            --warning-box-text: #fed7aa;
+            --gemini-box-bg: #047857;
+            --gemini-box-border: #34d399;
+            --gemini-box-text: #a7f3d0;
+            --success-box-bg: #166534; 
+            --success-box-border: #4ade80; 
+            --success-box-text: #d1fae5; 
+            --shadow-color: rgba(0,0,0,0.3);
+            --modal-overlay-bg: rgba(0, 0, 0, 0.7);
+
+            /* Animasyonlu Arka Plan Renkleri (Koyu Tema) */
+            --anim-grad-color1: hsla(217, 71%, 65%, 0.1);  /* Mavi tonu, biraz daha görünür opaklık */
+            --anim-grad-color2: hsla(0, 84%, 70%, 0.09);   /* Kırmızı tonu, biraz daha görünür opaklık */
+            --anim-grad-color3: hsla(160, 100%, 45%, 0.1); /* Zümrüt tonu, biraz daha görünür opaklık */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            
+            /* Ana arka plan rengi (sabit) */
+            background-color: var(--bg-primary);
+            
+            /* Animasyonlu gradient (sabit rengin üzerine gelir) */
+            background-image: linear-gradient(135deg,
+                var(--anim-grad-color1),
+                var(--anim-grad-color2),
+                var(--anim-grad-color3),
+                var(--anim-grad-color1) /* Döngüyü yumuşatmak için ilk renk tekrar */
+            );
+            background-size: 400% 400%; /* Gradientin hareket edebilmesi için büyük boyut */
+            
+            animation: gradientBG 30s ease infinite; /* Animasyon tanımı */
+            
+            transition: background-color 0.3s ease, color 0.3s ease; /* Tema geçişi için */
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .main-container {
+            background-color: var(--bg-secondary); /* Ana içerik kutusunun kendi arka planı */
+            box-shadow: 0 10px 25px -5px var(--shadow-color), 0 20px 30px -15px var(--shadow-color);
+            position: relative; /* Gerekirse z-index için */
+            z-index: 1; /* Body'deki animasyonun üzerinde kalmasını sağlamak için */
+        }
+        .input-field {
+            background-color: var(--input-bg);
+            border-color: var(--input-border);
+            color: var(--text-primary);
+        }
+        .input-field:focus, .input-group:focus-within { 
+            outline: none;
+            box-shadow: 0 0 0 3px var(--input-focus-ring);
+            border-color: var(--btn-secondary-bg);
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--input-border);
+            border-radius: 0.375rem; 
+            background-color: var(--input-bg);
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .input-group input {
+            border: none !important;
+            box-shadow: none !important;
+            flex-grow: 1;
+            background-color: transparent; 
+        }
+        .input-group-btn {
+            color: var(--text-muted);
+            padding: 0 0.75rem;
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+        }
+        .input-group-btn:hover { color: var(--text-primary); }
+
+        .btn {
+            transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+        }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px -2px var(--shadow-color);
+        }
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        .btn-primary { background-color: var(--btn-primary-bg); }
+        .btn-primary:hover:not(:disabled) { background-color: var(--btn-primary-hover-bg); }
+        .btn-secondary { background-color: var(--btn-secondary-bg); }
+        .btn-secondary:hover:not(:disabled) { background-color: var(--btn-secondary-hover-bg); }
+        .btn-tertiary { background-color: var(--btn-tertiary-bg); color: var(--bg-secondary); }
+        .btn-tertiary:hover:not(:disabled) { background-color: var(--btn-tertiary-hover-bg); }
+        
+        .message-box {
+            border-left-width: 4px;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            margin-bottom: 0.75rem;
+            position: relative; 
+        }
+        .info-box { background-color: var(--info-box-bg); border-color: var(--info-box-border); color: var(--info-box-text); }
+        .warning-box { background-color: var(--warning-box-bg); border-color: var(--warning-box-border); color: var(--warning-box-text); }
+        .gemini-output-box { background-color: var(--gemini-box-bg); border-color: var(--gemini-box-border); color: var(--gemini-box-text); }
+        .error-box { background-color: var(--btn-primary-hover-bg); border-color: var(--btn-primary-bg); color: var(--bg-secondary); }
+        .success-box { background-color: var(--success-box-bg); border-color: var(--success-box-border); color: var(--success-box-text); }
+
+
+        .loader {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--btn-secondary-bg);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+            display: inline-block; 
+            vertical-align: middle; 
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--modal-overlay-bg); display: flex; align-items: center; justify-content: center; z-index: 50; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content { background-color: var(--bg-secondary); padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 10px 25px -5px var(--shadow-color); width: 90%; max-width: 550px; max-height: 85vh; overflow-y: auto; transform: scale(0.95); transition: transform 0.3s ease; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-title { color: var(--text-primary); }
+        .modal-body p, .modal-body ul, .modal-body li { color: var(--text-secondary); }
+        .theme-toggle-btn { background-color: transparent; border: none; color: var(--text-secondary); }
+        .theme-toggle-btn:hover { color: var(--text-primary); }
+
+        #url_history_list { max-height: 150px; overflow-y: auto; background-color: var(--bg-tertiary); padding: 0.5rem; border-radius: 0.375rem; }
+        .history-item {
+            background-color: var(--bg-secondary); 
+            color: var(--text-secondary);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            word-break: break-all;
+            margin-bottom: 0.25rem;
+            border: 1px solid var(--border-color);
+        }
+        .history-item:last-child { margin-bottom: 0; }
+        .history-item:hover { background-color: var(--border-color); color: var(--text-primary); }
+        
+        .gemini-buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem; 
+        }
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--btn-tertiary-bg);
+            color: var(--bg-secondary);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem; 
+            border-radius: 0.25rem; 
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s, background-color 0.2s;
+            border: none;
+        }
+        .copy-button:hover { opacity: 1; background-color: var(--btn-tertiary-hover-bg); }
+        .prose { color: var(--gemini-box-text); } 
+        .prose strong { color: var(--gemini-box-text) !important; } 
+        .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 { color: var(--gemini-box-text) !important; }
+        .prose ul > li::before { background-color: var(--gemini-box-text) !important; } 
+        .prose ol > li::before { color: var(--gemini-box-text) !important; } 
+        .prose code { background-color: var(--bg-tertiary) !important; color: var(--text-primary) !important; padding: 0.1em 0.3em !important; border-radius: 0.2em !important;}
+        .prose pre { background-color: var(--bg-tertiary) !important; color: var(--text-primary) !important; padding: 0.5em !important; border-radius: 0.3em !important; overflow-x: auto !important;}
+
+        #quality option {
+            background-color: var(--bg-secondary); 
+            color: var(--text-primary); 
+        }
+        .dark-mode #quality option {
+             background-color: var(--input-bg); 
+             color: var(--text-primary);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="main-container p-6 sm:p-8 rounded-xl w-full max-w-2xl relative">
+        <div class="absolute top-4 right-4 flex items-center space-x-2">
+            <button id="settings_button" title="Ayarlar" class="theme-toggle-btn p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[var(--btn-secondary-bg)]">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </button>
+            <button id="theme_toggle_button" title="Temayı Değiştir" class="theme-toggle-btn p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[var(--btn-secondary-bg)]">
+                <svg id="theme_icon_sun" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m8.66-15.66l-.707.707M4.04 19.96l-.707.707M21 12h-1M4 12H3m15.66 8.66l-.707-.707M4.747 4.747l-.707-.707" /></svg>
+                <svg id="theme_icon_moon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+            </button>
+        </div>
+
+        <header class="mb-6 text-center pt-8 sm:pt-0">
+            <h1 class="text-2xl sm:text-3xl font-bold">Gelişmiş YouTube Video İndirici</h1>
+            <p class="text-sm text-[var(--text-secondary)] mt-1">Tüm araçlar bir arada: İndir, Özetle, Keşfet!</p>
+        </header>
+
+        <div class="space-y-6">
+            <div>
+                <label for="youtube_url" class="block text-sm font-medium text-[var(--text-secondary)] mb-1">YouTube Video URL'si:</label>
+                <div class="input-group">
+                    <input type="url" id="youtube_url" name="youtube_url"
+                           class="w-full px-4 py-2.5 rounded-lg shadow-sm input-field transition-shadow duration-200"
+                           placeholder="https://www.youtube.com/watch?v=ornekVideoID">
+                    <button id="clear_url_button" title="URL'yi Temizle" class="input-group-btn hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="url_history_container" class="hidden">
+                <div class="flex justify-between items-center mb-1">
+                    <label class="block text-sm font-medium text-[var(--text-secondary)]">Son Girilen URL'ler:</label>
+                    <button id="clear_history_button" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">Geçmişi Temizle</button>
+                </div>
+                <div id="url_history_list" class="space-y-1">
+                    <p id="no_history_message" class="text-xs text-center text-[var(--text-muted)] py-2">Henüz bir URL girilmedi.</p>
+                </div>
+            </div>
+
+
+            <div id="gemini_features_section" class="pt-1 hidden">
+                 <h3 class="text-lg font-semibold text-[var(--text-primary)] mb-2">✨ Akıllı Asistan</h3>
+                 <div class="gemini-buttons-grid">
+                    <button data-prompt-type="summary" class="gemini-btn btn btn-secondary text-white font-medium py-2.5 px-3 rounded-lg shadow-sm text-sm">Videodan Özet Al</button>
+                    <button data-prompt-type="title" class="gemini-btn btn btn-secondary text-white font-medium py-2.5 px-3 rounded-lg shadow-sm text-sm">Başlık Önerisi</button>
+                    <button data-prompt-type="keywords" class="gemini-btn btn btn-secondary text-white font-medium py-2.5 px-3 rounded-lg shadow-sm text-sm">Anahtar Kelimeler</button>
+                    <button data-prompt-type="target_audience" class="gemini-btn btn btn-secondary text-white font-medium py-2.5 px-3 rounded-lg shadow-sm text-sm">Hedef Kitle Analizi</button>
+                    <button data-prompt-type="short_summary" class="gemini-btn btn btn-secondary text-white font-medium py-2.5 px-3 rounded-lg shadow-sm text-sm">3 Maddede Özet</button>
+                 </div>
+            </div>
+            <div id="gemini_output_area" class="mt-4 text-sm space-y-3">
+                </div>
+
+            <div>
+                <h3 class="text-lg font-semibold text-[var(--text-primary)] mb-2">İndirme Ayarları</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <span class="block text-sm font-medium text-[var(--text-secondary)] mb-1">İndirme Formatı:</span>
+                        <div class="flex items-center space-x-4 bg-[var(--bg-tertiary)] p-2 rounded-md">
+                            <div class="flex-1">
+                                <input id="format_video" name="format" type="radio" value="video" checked class="hidden peer">
+                                <label for="format_video" class="block text-center w-full py-2 px-3 rounded-md cursor-pointer text-sm font-medium text-[var(--text-secondary)] peer-checked:bg-[var(--btn-primary-bg)] peer-checked:text-white transition-all">Video</label>
+                            </div>
+                            <div class="flex-1">
+                                <input id="format_audio" name="format" type="radio" value="audio" class="hidden peer">
+                                <label for="format_audio" class="block text-center w-full py-2 px-3 rounded-md cursor-pointer text-sm font-medium text-[var(--text-secondary)] peer-checked:bg-[var(--btn-primary-bg)] peer-checked:text-white transition-all">Ses (MP3)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="quality_selection_div">
+                        <label for="quality" class="block text-sm font-medium text-[var(--text-secondary)] mb-1">Kalite:</label>
+                        <select id="quality" name="quality"
+                                class="w-full px-4 py-2.5 border rounded-lg shadow-sm input-field">
+                            <option value="1080p">1080p (Full HD)</option>
+                            <option value="720p" selected>720p (HD)</option>
+                            <option value="480p">480p</option>
+                            <option value="360p">360p</option>
+                            <option value="128kbps_audio" class="hidden">128kbps (Ses)</option>
+                            <option value="256kbps_audio" class="hidden">256kbps (Ses)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button id="download_button"
+                    class="w-full btn btn-primary text-white font-semibold py-3 px-4 rounded-lg shadow-md text-base">
+                İndirmeyi Başlat
+            </button>
+        </div>
+
+        <div id="message_area" class="mt-6 text-sm space-y-3">
+            </div>
+
+        <footer class="mt-8 pt-4 border-t border-[var(--border-color)] text-center text-xs text-[var(--text-muted)]">
+            <div class="space-x-4">
+                <button id="about_button" class="hover:text-[var(--text-primary)] transition-colors">Hakkında</button>
+                <a href="https://www.buymeacoffee.com/victorkaiber" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--text-primary)] transition-colors">
+                    ☕ Bana Kahve Ismarla
+                </a>
+            </div>
+            <p class="mt-2">Hizmetimizi kullanarak <a href="#" id="terms_link" class="underline hover:text-[var(--text-primary)]">Hizmet Şartlarımızı</a> ve <a href="#" id="privacy_link" class="underline hover:text-[var(--text-primary)]">Gizlilik Politikamızı</a> kabul etmiş olursunuz.</p>
+            <p class="mt-2">© <span id="current_year"></span> Gelişmiş YouTube Video İndirici. Tüm hakları saklıdır.</p>
+        </footer>
+    </div>
+
+    <div id="about_modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold modal-title">Uygulama Hakkında</h2>
+                <button id="close_about_modal_button" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-2xl font-light">×</button>
+            </div>
+            <div class="modal-body space-y-3 text-sm">
+                <p>Bu Gelişmiş YouTube İndirici arayüzü, kullanıcılara çeşitli araçlar sunarak YouTube deneyimlerini zenginleştirmeyi amaçlar.</p>
+                <p><strong>Temel Özellikler:</strong></p>
+                <ul class="list-disc list-inside ml-4 space-y-1">
+                    <li>YouTube URL'si ile video/ses indirme (simülasyon).</li>
+                    <li>Format (Video/MP3) ve kalite seçimi.</li>
+                    <li>Gemini API entegrasyonu ile:
+                        <ul class="list-disc list-inside ml-6">
+                            <li>Videolar için otomatik özet alma.</li>
+                            <li>Videolar için alternatif başlık önerileri.</li>
+                            <li>Anahtar kelime çıkarma.</li>
+                            <li>Hedef kitle analizi.</li>
+                            <li>Kısa (3 maddelik) özetler.</li>
+                        </ul>
+                    </li>
+                    <li>Açık/Koyu tema desteği.</li>
+                    <li>URL giriş geçmişi ve yönetimi.</li>
+                    <li>Ayarlar paneli (tema, geçmiş temizleme).</li>
+                    <li>Gemini yanıtlarını kopyalama özelliği.</li>
+                </ul>
+                <p class="mt-3 text-xs text-[var(--text-muted)]">
+                       Lütfen platformların hizmet şartlarına ve telif haklarına daima uyunuz.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="settings_modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold modal-title">Ayarlar</h2>
+                <button id="close_settings_modal_button" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-2xl font-light">×</button>
+            </div>
+            <div class="modal-body space-y-4 text-sm">
+                <div>
+                    <h3 class="text-base font-medium text-[var(--text-primary)] mb-2">Tema Seçimi</h3>
+                    <p class="text-xs text-[var(--text-muted)] mb-2">Uygulama görünümünü kişiselleştirin.</p>
+                    <div class="flex items-center space-x-2 p-2 bg-[var(--bg-tertiary)] rounded-md">
+                        <button id="theme_light_button" class="flex-1 py-2 px-3 rounded-md text-sm settings-theme-btn" data-theme="light">Açık</button>
+                        <button id="theme_dark_button" class="flex-1 py-2 px-3 rounded-md text-sm settings-theme-btn" data-theme="dark">Koyu</button>
+                        <button id="theme_system_button" class="flex-1 py-2 px-3 rounded-md text-sm settings-theme-btn" data-theme="system">Sistem</button>
+                    </div>
+                </div>
+                <hr class="border-[var(--border-color)]">
+                <div>
+                    <h3 class="text-base font-medium text-[var(--text-primary)] mb-2">URL Geçmişi</h3>
+                     <p class="text-xs text-[var(--text-muted)] mb-2">Kaydedilmiş YouTube URL'lerini yönetin.</p>
+                    <button id="clear_all_history_button" class="w-full btn btn-tertiary text-white font-medium py-2 px-3 rounded-lg shadow-sm text-sm">Tüm URL Geçmişini Temizle</button>
+                </div>
+                 <hr class="border-[var(--border-color)]">
+                <div>
+                    <h3 class="text-base font-medium text-[var(--text-primary)] mb-2">Varsayılan İndirme Kalitesi (Video)</h3>
+                    <select id="default_video_quality_select" class="w-full px-4 py-2.5 border rounded-lg shadow-sm input-field">
+                        <option value="1080p">1080p (Full HD)</option>
+                        <option value="720p">720p (HD)</option>
+                        <option value="480p">480p</option>
+                        <option value="360p">360p</option>
+                    </select>
+                </div>
+                <div>
+                    <h3 class="text-base font-medium text-[var(--text-primary)] mb-2">Varsayılan İndirme Kalitesi (Ses)</h3>
+                    <select id="default_audio_quality_select" class="w-full px-4 py-2.5 border rounded-lg shadow-sm input-field">
+                         <option value="256kbps_audio">256kbps</option>
+                         <option value="128kbps_audio">128kbps</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <div id="terms_modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold modal-title">Hizmet Şartları</h2>
+                <button id="close_terms_modal_button" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-2xl font-light">×</button>
+            </div>
+            <div class="modal-body space-y-3 text-sm">
+                <p>Lütfen dikkat: Bu uygulama yalnızca bir konsept ve kullanıcı arayüzü gösterimi amaçlıdır. YouTube'un hizmet şartları, videoların yetkisiz olarak indirilmesini yasaklar. Bu tür araçları kullanırken telif haklarına ve platform politikalarına saygı göstermek çok önemlidir.</p>
+                <p>Bu arayüzü kullanarak, YouTube'dan içerik indirme işlemlerinin sorumluluğunun tamamen size ait olduğunu ve yerel yasalara, YouTube'un hizmet şartlarına ve içerik oluşturucularının haklarına saygı göstereceğinizi kabul etmiş olursunuz.</p>
+                <p>Bu arayüz, herhangi bir yasadışı faaliyeti teşvik etmez veya desteklemez. Kullanıcılar, bu arayüzü yalnızca yasalara ve platform politikalarına uygun şekilde kullanmalıdır.</p>
+                <p><strong>Son Güncelleme:</strong> <span id="current_date_terms"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="privacy_modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold modal-title">Gizlilik Politikası</h2>
+                <button id="close_privacy_modal_button" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-2xl font-light">×</button>
+            </div>
+            <div class="modal-body space-y-3 text-sm">
+                <p>Bu uygulama, kullanıcı gizliliğine saygı duyar.</p>
+                <p><strong>Veri Toplama:</strong></p>
+                <ul class="list-disc list-inside ml-4">
+                    <li><strong>URL Geçmişi:</strong> Girdiğiniz YouTube URL'leri, kullanım kolaylığı sağlamak amacıyla yalnızca tarayıcınızın yerel depolama alanında (localStorage) saklanır. Bu veriler harici sunuculara gönderilmez. Geçmişi istediğiniz zaman Ayarlar bölümünden temizleyebilirsiniz.</li>
+                    <li><strong>Tema ve Ayar Tercihleri:</strong> Tema (açık/koyu/sistem) ve varsayılan kalite gibi ayar tercihleriniz, kullanıcı deneyiminizi kişiselleştirmek için tarayıcınızın yerel depolama alanında saklanır.</li>
+                    <li><strong>Gemini API Kullanımı:</strong> "Gemini Akıllı Asistan" özelliklerini kullandığınızda, girdiğiniz YouTube URL'si (veya bu URL'ye dayalı bir istem) Google'ın Gemini API'sine gönderilir. Google'ın API kullanım şartları ve gizlilik politikası bu etkileşimler için geçerlidir. Bu uygulama, Gemini API'sinden dönen yanıtlar dışında ek bir veri saklamaz.</li>
+                </ul>
+                <p><strong>Veri Paylaşımı:</strong> Bu uygulama, yerel olarak saklanan verilerinizi (URL geçmişi, ayarlar) üçüncü taraflarla paylaşmaz.</p>
+                <p><strong>Çerezler:</strong> Bu uygulama doğrudan çerez (cookie) kullanmaz. Ancak, entegre edilen üçüncü taraf hizmetleri (örneğin, Google Fonts, Tailwind CDN) kendi çerezlerini kullanabilir.</p>
+                <p><strong>Son Güncelleme:</strong> <span id="current_date_privacy"></span></p>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // DOM elementleri
+        const body = document.body;
+        const urlInput = document.getElementById('youtube_url');
+        const clearUrlButton = document.getElementById('clear_url_button');
+        const downloadButton = document.getElementById('download_button');
+        const messageArea = document.getElementById('message_area');
+        const formatRadios = document.querySelectorAll('input[name="format"]');
+        const qualitySelect = document.getElementById('quality');
+        const currentYearSpan = document.getElementById('current_year');
+        const currentDateTermsSpan = document.getElementById('current_date_terms');
+        const currentDatePrivacySpan = document.getElementById('current_date_privacy');
+
+        const geminiFeaturesSection = document.getElementById('gemini_features_section');
+        const geminiButtons = document.querySelectorAll('.gemini-btn');
+        const geminiOutputArea = document.getElementById('gemini_output_area');
+        
+        const themeToggleButton = document.getElementById('theme_toggle_button');
+        const themeIconSun = document.getElementById('theme_icon_sun');
+        const themeIconMoon = document.getElementById('theme_icon_moon');
+        
+        const aboutButton = document.getElementById('about_button');
+        const aboutModal = document.getElementById('about_modal');
+        const closeAboutModalButton = document.getElementById('close_about_modal_button');
+
+        const settingsButton = document.getElementById('settings_button');
+        const settingsModal = document.getElementById('settings_modal');
+        const closeSettingsModalButton = document.getElementById('close_settings_modal_button');
+        const themeLightButton = document.getElementById('theme_light_button');
+        const themeDarkButton = document.getElementById('theme_dark_button');
+        const themeSystemButton = document.getElementById('theme_system_button');
+        const settingsThemeButtons = document.querySelectorAll('.settings-theme-btn');
+        const clearAllHistoryButton = document.getElementById('clear_all_history_button');
+        const defaultVideoQualitySelect = document.getElementById('default_video_quality_select');
+        const defaultAudioQualitySelect = document.getElementById('default_audio_quality_select');
+
+        const urlHistoryContainer = document.getElementById('url_history_container');
+        const urlHistoryList = document.getElementById('url_history_list');
+        const noHistoryMessage = document.getElementById('no_history_message');
+        const clearHistoryButton = document.getElementById('clear_history_button'); // Bu, ana arayüzdeki küçük temizle butonu
+
+        const termsLink = document.getElementById('terms_link');
+        const privacyLink = document.getElementById('privacy_link');
+        const termsModal = document.getElementById('terms_modal');
+        const privacyModal = document.getElementById('privacy_modal');
+        const closeTermsModalButton = document.getElementById('close_terms_modal_button');
+        const closePrivacyModalButton = document.getElementById('close_privacy_modal_button');
+
+
+        // Yıl ve Tarih Ayarları
+        const today = new Date();
+        currentYearSpan.textContent = today.getFullYear();
+        const formattedDate = today.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        if(currentDateTermsSpan) currentDateTermsSpan.textContent = formattedDate;
+        if(currentDatePrivacySpan) currentDatePrivacySpan.textContent = formattedDate;
+
+
+        // Gemini API Bilgileri
+        const GEMINI_API_KEY = ""; // Canvas ortamında otomatik sağlanacaktır.
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+        // Ayarlar ve Tercihler için localStorage Anahtarları
+        const THEME_KEY = 'app_theme';
+        const URL_HISTORY_KEY = 'youtube_url_history';
+        const DEFAULT_VIDEO_QUALITY_KEY = 'default_video_quality';
+        const DEFAULT_AUDIO_QUALITY_KEY = 'default_audio_quality';
+        const MAX_HISTORY_ITEMS = 10;
+
+        // --- Başlangıç Ayarları Yükleme ---
+        function loadInitialSettings() {
+            // Tema
+            const savedTheme = localStorage.getItem(THEME_KEY) || 'system';
+            applyTheme(savedTheme);
+            updateSettingsThemeButtons(savedTheme);
+
+            // URL Geçmişi
+            renderUrlHistory();
+
+            // Varsayılan Kalite
+            const savedVideoQuality = localStorage.getItem(DEFAULT_VIDEO_QUALITY_KEY) || '720p';
+            defaultVideoQualitySelect.value = savedVideoQuality;
+            qualitySelect.value = savedVideoQuality; // Ana kalite seçicisini de ayarla
+
+            const savedAudioQuality = localStorage.getItem(DEFAULT_AUDIO_QUALITY_KEY) || '256kbps_audio';
+            defaultAudioQualitySelect.value = savedAudioQuality;
+            // Ses formatı seçildiğinde ana kalite seçicisini de güncellemek için bir fonksiyon çağrılabilir.
+            updateQualityOptions(document.querySelector('input[name="format"]:checked').value);
+
+
+            // URL giriş alanına otomatik odaklanma
+            urlInput.focus();
+        }
+
+
+        // --- Tema İşlevselliği ---
+        function applyTheme(theme) {
+            body.classList.remove('dark-mode', 'light-mode'); // Öncekileri temizle
+            if (theme === 'dark') {
+                body.classList.add('dark-mode');
+                themeIconSun.classList.add('hidden');
+                themeIconMoon.classList.remove('hidden');
+            } else if (theme === 'light') {
+                body.classList.add('light-mode'); // Açık mod için özel bir class eklenebilir veya varsayılan stiller kullanılır
+                themeIconSun.classList.remove('hidden');
+                themeIconMoon.classList.add('hidden');
+            } else { // system
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    body.classList.add('dark-mode');
+                    themeIconSun.classList.add('hidden');
+                    themeIconMoon.classList.remove('hidden');
+                } else {
+                    body.classList.add('light-mode');
+                    themeIconSun.classList.remove('hidden');
+                    themeIconMoon.classList.add('hidden');
+                }
+            }
+            localStorage.setItem(THEME_KEY, theme);
+            updateSettingsThemeButtons(theme);
+        }
+
+        function updateSettingsThemeButtons(activeTheme) {
+            settingsThemeButtons.forEach(button => {
+                if (button.dataset.theme === activeTheme) {
+                    button.style.backgroundColor = 'var(--btn-secondary-bg)';
+                    button.style.color = 'var(--bg-secondary)'; // white or light text
+                } else {
+                    button.style.backgroundColor = 'var(--bg-tertiary)';
+                    button.style.color = 'var(--text-primary)';
+                }
+            });
+        }
+
+        themeToggleButton.addEventListener('click', () => {
+            let currentTheme = localStorage.getItem(THEME_KEY) || 'system';
+            if (currentTheme === 'system') {
+                currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        });
+
+        settingsThemeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                applyTheme(button.dataset.theme);
+            });
+        });
+
+        // Sistem tema değişikliğini dinle
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (localStorage.getItem(THEME_KEY) === 'system') {
+                applyTheme('system');
+            }
+        });
+
+        // --- Modal İşlevselliği ---
+        function openModal(modalElement) { modalElement.classList.add('active'); }
+        function closeModal(modalElement) { modalElement.classList.remove('active'); }
+
+        aboutButton.addEventListener('click', () => openModal(aboutModal));
+        closeAboutModalButton.addEventListener('click', () => closeModal(aboutModal));
+        aboutModal.addEventListener('click', (e) => { if (e.target === aboutModal) closeModal(aboutModal); });
+
+        settingsButton.addEventListener('click', () => openModal(settingsModal));
+        closeSettingsModalButton.addEventListener('click', () => closeModal(settingsModal));
+        settingsModal.addEventListener('click', (e) => { if (e.target === settingsModal) closeModal(settingsModal); });
+        
+        termsLink.addEventListener('click', (e) => { e.preventDefault(); openModal(termsModal); });
+        closeTermsModalButton.addEventListener('click', () => closeModal(termsModal));
+        termsModal.addEventListener('click', (e) => { if (e.target === termsModal) closeModal(termsModal); });
+
+        privacyLink.addEventListener('click', (e) => { e.preventDefault(); openModal(privacyModal); });
+        closePrivacyModalButton.addEventListener('click', () => closeModal(privacyModal));
+        privacyModal.addEventListener('click', (e) => { if (e.target === privacyModal) closeModal(privacyModal); });
+
+
+        // --- URL Giriş Alanı İşlevselliği ---
+        urlInput.addEventListener('input', function() {
+            const url = this.value.trim();
+            clearUrlButton.classList.toggle('hidden', !url);
+            if (isValidYouTubeUrl(url)) {
+                geminiFeaturesSection.classList.remove('hidden');
+            } else {
+                geminiFeaturesSection.classList.add('hidden');
+                clearMessages(geminiOutputArea);
+            }
+        });
+        clearUrlButton.addEventListener('click', () => {
+            urlInput.value = '';
+            urlInput.focus();
+            clearUrlButton.classList.add('hidden');
+            geminiFeaturesSection.classList.add('hidden');
+            clearMessages(geminiOutputArea);
+        });
+        
+        function isValidYouTubeUrl(url) {
+            const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})([&?].*)?$/;
+            return youtubeRegex.test(url);
+        }
+
+        // --- URL Geçmişi İşlevselliği ---
+        function getUrlHistory() {
+            return JSON.parse(localStorage.getItem(URL_HISTORY_KEY)) || [];
+        }
+
+        function saveUrlToHistory(url) {
+            if (!isValidYouTubeUrl(url)) return;
+            let history = getUrlHistory();
+            // Aynı URL varsa önce onu kaldır (üste taşımak için)
+            history = history.filter(item => item !== url);
+            history.unshift(url); // Başa ekle
+            if (history.length > MAX_HISTORY_ITEMS) {
+                history = history.slice(0, MAX_HISTORY_ITEMS);
+            }
+            localStorage.setItem(URL_HISTORY_KEY, JSON.stringify(history));
+            renderUrlHistory();
+        }
+
+        function renderUrlHistory() {
+            const history = getUrlHistory();
+            urlHistoryList.innerHTML = ''; // Önce temizle
+            if (history.length === 0) {
+                noHistoryMessage.classList.remove('hidden');
+                urlHistoryContainer.classList.add('hidden'); // Eğer geçmiş boşsa tüm konteyneri gizle
+            } else {
+                noHistoryMessage.classList.add('hidden');
+                urlHistoryContainer.classList.remove('hidden'); // Geçmiş varsa konteyneri göster
+                history.forEach(url => {
+                    const li = document.createElement('li');
+                    li.textContent = url;
+                    li.className = 'history-item';
+                    li.addEventListener('click', () => {
+                        urlInput.value = url;
+                        urlInput.dispatchEvent(new Event('input')); // Gemini butonlarını vs. tetikle
+                        urlInput.focus();
+                    });
+                    urlHistoryList.appendChild(li);
+                });
+            }
+        }
+
+        clearHistoryButton.addEventListener('click', () => { // Ana arayüzdeki küçük temizle
+            localStorage.removeItem(URL_HISTORY_KEY);
+            renderUrlHistory();
+            displayMessage("URL geçmişi temizlendi.", "success", messageArea);
+        });
+        clearAllHistoryButton.addEventListener('click', () => { // Ayarlar modalındaki büyük temizle
+            localStorage.removeItem(URL_HISTORY_KEY);
+            renderUrlHistory();
+            displayMessage("URL geçmişi temizlendi.", "success", messageArea);
+            closeModal(settingsModal); // Ayarlar modalını kapat
+        });
+
+
+        // --- İndirme Formatı ve Kalite Seçimi ---
+        formatRadios.forEach(radio => {
+            radio.addEventListener('change', function() { updateQualityOptions(this.value); });
+        });
+
+        function updateQualityOptions(format) {
+            const isVideo = format === 'video';
+            const defaultQuality = isVideo ? localStorage.getItem(DEFAULT_VIDEO_QUALITY_KEY) || '720p' : localStorage.getItem(DEFAULT_AUDIO_QUALITY_KEY) || '256kbps_audio';
+            
+            Array.from(qualitySelect.options).forEach(option => {
+                option.classList.toggle('hidden', isVideo ? option.value.includes('_audio') : !option.value.includes('_audio'));
+            });
+            
+            // Seçili kaliteyi ayarla (görünür seçenekler arasından)
+            const visibleOptions = Array.from(qualitySelect.options).filter(opt => !opt.classList.contains('hidden'));
+            const optionToSelect = visibleOptions.find(opt => opt.value === defaultQuality) || visibleOptions[0];
+            if (optionToSelect) {
+                qualitySelect.value = optionToSelect.value;
+            }
+        }
+        
+        // Varsayılan kalite ayarları değiştiğinde kaydet
+        defaultVideoQualitySelect.addEventListener('change', function() {
+            localStorage.setItem(DEFAULT_VIDEO_QUALITY_KEY, this.value);
+            if (document.querySelector('input[name="format"]:checked').value === 'video') {
+                qualitySelect.value = this.value;
+            }
+            displayMessage("Varsayılan video kalitesi kaydedildi.", "success", messageArea);
+        });
+        defaultAudioQualitySelect.addEventListener('change', function() {
+            localStorage.setItem(DEFAULT_AUDIO_QUALITY_KEY, this.value);
+             if (document.querySelector('input[name="format"]:checked').value === 'audio') {
+                qualitySelect.value = this.value;
+            }
+            displayMessage("Varsayılan ses kalitesi kaydedildi.", "success", messageArea);
+        });
+
+
+        // --- İndirme Düğmesi ---
+        downloadButton.addEventListener('click', function() {
+            const url = urlInput.value.trim();
+            const selectedFormat = document.querySelector('input[name="format"]:checked').value;
+            const selectedQuality = qualitySelect.value;
+
+            clearMessages(messageArea);
+
+            if (!url) {
+                displayMessage('Lütfen geçerli bir YouTube URL\'si girin.', 'error', messageArea);
+                return;
+            }
+            if (!isValidYouTubeUrl(url)) {
+                displayMessage('Geçersiz YouTube URL formatı. (Örn: https://www.youtube.com/watch?v=videoID)', 'error', messageArea);
+                return;
+            }
+            
+            saveUrlToHistory(url); // Geçerli URL'yi geçmişe kaydet
+
+            displayMessage(`İndirme işlemi başlatılıyor...\nURL: ${url}\nFormat: ${selectedFormat}\nKalite: ${selectedQuality}`, 'info', messageArea);
+            
+            downloadButton.disabled = true;
+            downloadButton.innerHTML = '<div class="loader"></div>İşleniyor... Lütfen Bekleyin';
+            
+            setTimeout(() => { // Simülasyon
+                displayMessage(`"${url}" için ${selectedFormat} (${selectedQuality}) indirme bağlantısı hazırlandı. (Bu bir simülasyondur, gerçek indirme yapılmaz.)`, 'success', messageArea);
+                downloadButton.disabled = false;
+                downloadButton.textContent = 'İndirmeyi Başlat';
+            }, 3000);
+        });
+
+        // --- Gemini API İşlevselliği ---
+        const geminiPrompts = {
+            summary: "Bir YouTube videosu hakkında detaylı bir özet oluştur. Video URL'si: {VIDEO_URL}. Bu videonun ana konularını, önemli argümanlarını, sunulan örnekleri ve genel mesajını içeren kapsamlı bir özet yaz. Yanıtını Markdown formatında, başlıklar, alt başlıklar ve madde işaretleri kullanarak düzenle. Eğer videoya doğrudan erişimin yoksa, bu URL'ye sahip olabilecek varsayımsal bir videonun olası içeriğine dayanarak bir özet oluştur.",
+            title: "Bir YouTube videosu için 5 adet alternatif, SEO dostu ve dikkat çekici başlık öner. Video URL'si: {VIDEO_URL}. Önerilerin kısa (ideal olarak 70 karakterden az), merak uyandırıcı ve videonun potansiyel içeriğiyle alakalı olsun. Her bir başlığı numaralandırılmış liste olarak sun. Eğer videoya doğrudan erişimin yoksa, bu URL'ye sahip olabilecek varsayımsal bir videonun olası içeriğine dayanarak başlıklar öner.",
+            keywords: "Bir YouTube videosu için en alakalı 10-15 anahtar kelimeyi ve 3-5 uzun kuyruklu anahtar kelimeyi (long-tail keywords) çıkar. Video URL'si: {VIDEO_URL}. Anahtar kelimeler videonun ana konusunu, alt konularını ve hedef kitlenin arama yapabileceği terimleri yansıtmalıdır. Yanıtını 'Anahtar Kelimeler:' ve 'Uzun Kuyruklu Anahtar Kelimeler:' başlıkları altında Markdown listeleri olarak sun. Eğer videoya doğrudan erişimin yoksa, bu URL'ye sahip olabilecek varsayımsal bir videonun olası içeriğine dayanarak anahtar kelimeler öner.",
+            target_audience: "Bir YouTube videosunun potansiyel hedef kitlesini analiz et. Video URL'si: {VIDEO_URL}. Hedef kitlenin demografik özelliklerini (yaş, cinsiyet, konum vb.), ilgi alanlarını, ihtiyaçlarını ve videoyu neden izleyebileceklerini belirle. Yanıtını Markdown formatında, başlıklar ve listeler kullanarak detaylı bir analiz şeklinde sun. Eğer videoya doğrudan erişimin yoksa, bu URL'ye sahip olabilecek varsayımsal bir videonun olası içeriğine dayanarak bir hedef kitle analizi yap.",
+            short_summary: "Bir YouTube videosunu en fazla 3 kısa ve öz maddede özetle. Video URL'si: {VIDEO_URL}. Her madde videonun en önemli bir yönünü vurgulamalıdır. Yanıtını numaralandırılmış liste olarak sun. Eğer videoya doğrudan erişimin yoksa, bu URL'ye sahip olabilecek varsayımsal bir videonun olası içeriğine dayanarak 3 maddelik bir özet oluştur."
+        };
+
+        geminiButtons.forEach(button => {
+            button.addEventListener('click', async function() {
+                const url = urlInput.value.trim();
+                if (!isValidYouTubeUrl(url)) {
+                    displayGeminiOutput("Lütfen önce geçerli bir YouTube URL'si girin.", "error");
+                    return;
+                }
+                const promptType = this.dataset.promptType;
+                const promptTemplate = geminiPrompts[promptType];
+                if (!promptTemplate) {
+                    displayGeminiOutput("Geçersiz Gemini istem türü.", "error");
+                    return;
+                }
+                const promptText = promptTemplate.replace("{VIDEO_URL}", url);
+                const loadingMessage = this.textContent + " alınıyor...";
+                
+                saveUrlToHistory(url); // Gemini için de geçmişe kaydet
+                callGeminiAPI(promptText, loadingMessage, this);
+            });
+        });
+        
+        async function callGeminiAPI(promptText, loadingMessage, clickedButton) {
+            clearMessages(geminiOutputArea);
+            displayGeminiOutput(`<div class="loader"></div><p class="text-center mt-2">${loadingMessage}</p>`, "loading");
+
+            const originalButtonText = clickedButton.innerHTML;
+            geminiButtons.forEach(btn => {
+                btn.disabled = true;
+                btn.innerHTML = '<div class="loader"></div>';
+            });
+            clickedButton.innerHTML = `<div class="loader"></div> ${loadingMessage.substring(0,15)}...`;
+
+
+            let chatHistory = [{ role: "user", parts: [{ text: promptText }] }];
+            const payload = { contents: chatHistory };
+
+            try {
+                const response = await fetch(GEMINI_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`API Hatası (${response.status}): ${errorData?.error?.message || 'Bilinmeyen bir hata oluştu.'}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates[0]?.content?.parts?.[0]?.text) {
+                    const rawText = result.candidates[0].content.parts[0].text;
+                    // Basit Markdown'ı HTML'e çevirme (çok temel)
+                    let htmlText = rawText
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                        .replace(/^### (.*$)/gim, '<h3 class="text-lg font-semibold mt-3 mb-1">$1</h3>')
+                        .replace(/^## (.*$)/gim, '<h2 class="text-xl font-semibold mt-4 mb-2">$1</h2>')
+                        .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold mt-5 mb-3">$1</h1>')
+                        .replace(/^\s*[\-\*]\s+(.*)/gm, '<li class="ml-5">$1</li>') // Madde işaretleri
+                        .replace(/^\s*\d+\.\s+(.*)/gm, '<li class="ml-1">$1</li>')   // Numaralı listeler için temel
+                        .replace(/<\/li>\s*<li class="ml-1">/g, '</li><li class="ml-1">') // Numaralı liste aralarındaki boşlukları düzelt
+                        .replace(/<\/li>\s*<li class="ml-5">/g, '</li><li class="ml-5">') // Madde işaretli liste aralarındaki boşlukları düzelt
+                        .replace(/((?:<li class="ml-5">.*?<\/li>\s*)+)/g, '<ul class="list-disc list-inside mb-2">$1</ul>') // Madde işaretli listeleri sar
+                        .replace(/((?:<li class="ml-1">.*?<\/li>\s*)+)/g, (match) => { // Numaralı listeleri sar
+                            // Eğer zaten bir ol içindeyse tekrar sarmamak için kontrol et (basit kontrol)
+                            if (match.startsWith('<ol') || match.includes('</ol><ol')) return match;
+                            return `<ol class="list-decimal list-inside mb-2">${match}</ol>`;
+                         })
+                        .replace(/```([\s\S]*?)```/g, (match, p1) => `<pre class="bg-[var(--bg-tertiary)] text-[var(--text-primary)] p-3 my-2 rounded-md text-sm overflow-x-auto whitespace-pre-wrap">${p1.trim().replace(/</g, "<").replace(/>/g, ">")}</pre>`)
+                        .replace(/`([^`]+)`/g, '<code class="bg-[var(--bg-tertiary)] text-[var(--text-primary)] px-1.5 py-0.5 rounded text-sm">$1</code>')
+                        .replace(/\n/g, '<br>')
+                        .replace(/<br>\s*<br>/g, '<br>') // Fazla <br> etiketlerini azalt
+                        .replace(/<br><ul/g, '<ul').replace(/<br><ol/g, '<ol') // Liste öncesi gereksiz <br> kaldır
+                        .replace(/<\/ul><br>/g, '</ul>').replace(/<\/ol><br>/g, '</ol>'); // Liste sonrası gereksiz <br> kaldır
+
+                    displayGeminiOutput(htmlText, "success", rawText); // Ham metni kopyalama için gönder
+                } else {
+                    displayGeminiOutput("Beklenmedik bir yanıt alındı veya yanıt boş. Lütfen konsolu kontrol edin.", "error");
+                }
+            } catch (error) {
+                console.error("Gemini API Çağrısı Başarısız:", error);
+                displayGeminiOutput(`Bir API hatası oluştu: ${error.message}. Lütfen daha sonra tekrar deneyin.`, "error");
+            } finally {
+                 geminiButtons.forEach(btn => {
+                    btn.disabled = false;
+                    // Orijinal metinlerini geri yükle
+                    const originalTextMap = {
+                        summary: "Videodan Özet Al",
+                        title: "Başlık Önerisi",
+                        keywords: "Anahtar Kelimeler",
+                        target_audience: "Hedef Kitle Analizi",
+                        short_summary: "3 Maddede Özet"
+                    };
+                    btn.innerHTML = originalTextMap[btn.dataset.promptType] || "Gemini Özelliği";
+                });
+            }
+        }
+        
+        // --- Mesaj Gösterme Fonksiyonları ---
+        function clearMessages(area) {
+            area.innerHTML = '';
+        }
+
+        function displayMessage(message, type = 'info', area = messageArea) {
+            const messageDiv = document.createElement('div');
+            messageDiv.innerHTML = message.replace(/\n/g, '<br>');
+            messageDiv.classList.add('message-box');
+
+            if (type === 'error') messageDiv.classList.add('error-box');
+            else if (type === 'success') messageDiv.classList.add('success-box');
+            else messageDiv.classList.add('info-box');
+            
+            if (area.firstChild) area.insertBefore(messageDiv, area.firstChild);
+            else area.appendChild(messageDiv);
+
+            // Mesajı 5 saniye sonra otomatik kaldır (opsiyonel)
+            if (type === 'success' || type === 'info') {
+                setTimeout(() => {
+                    if (messageDiv.parentNode === area) { // Hala DOM'da mı kontrol et
+                         messageDiv.style.opacity = '0';
+                         setTimeout(() => area.removeChild(messageDiv), 300); // Animasyon sonrası kaldır
+                    }
+                }, 5000);
+            }
+        }
+
+        function displayGeminiOutput(htmlMessage, type = 'info', rawTextToCopy = '') {
+            clearMessages(geminiOutputArea);
+            const outputDiv = document.createElement('div');
+            outputDiv.innerHTML = htmlMessage;
+            outputDiv.classList.add('message-box', 'relative'); // Kopyala butonu için relative
+            
+            if (type === 'loading') { /* Yükleyici zaten mesajın içinde */ }
+            else if (type === 'error') outputDiv.classList.add('error-box');
+            else {
+                outputDiv.classList.add('gemini-output-box', 'prose', 'prose-sm', 'max-w-none');
+                if (rawTextToCopy) {
+                    const copyBtn = document.createElement('button');
+                    copyBtn.textContent = 'Kopyala';
+                    copyBtn.className = 'copy-button';
+                    copyBtn.title = "Yanıtı panoya kopyala";
+                    copyBtn.addEventListener('click', () => {
+                        navigator.clipboard.writeText(rawTextToCopy)
+                            .then(() => {
+                                copyBtn.textContent = 'Kopyalandı!';
+                                setTimeout(() => { copyBtn.textContent = 'Kopyala'; }, 2000);
+                            })
+                            .catch(err => {
+                                console.error('Kopyalama başarısız: ', err);
+                                displayMessage('Kopyalama başarısız oldu.', 'error', geminiOutputArea);
+                            });
+                    });
+                    outputDiv.appendChild(copyBtn);
+                }
+            }
+            geminiOutputArea.appendChild(outputDiv);
+        }
+
+        // Sayfa yüklendiğinde başlangıç ayarlarını yükle
+        document.addEventListener('DOMContentLoaded', loadInitialSettings);
+
+    </script>
+</body>
+</html>
