@@ -3,7 +3,6 @@
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://www.javascript.com/)
-[![Google Gemini](https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 This project is a single-page YouTube video/audio download simulation tool with a modern and user-friendly interface. In addition to standard download features, it offers intelligent analysis and summaries of video content through its Google Gemini API integration.
@@ -11,8 +10,6 @@ This project is a single-page YouTube video/audio download simulation tool with 
 ---
 
 *You can make the project more appealing by adding a screenshot here. Update the line below with the path to your own screenshot.*
-
-![Application Interface](https-path-to-your-project-screenshot.png)
 
 ---
 
