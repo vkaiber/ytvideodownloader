@@ -52,7 +52,7 @@ This project is a single HTML file that requires no server or build process.
 
 1.  **Clone or Download the Project:**
     ```bash
-    git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
+    git clone [https://github.com/vkaiber/ytvideodownloader.git]
     ```
 
 2.  **Get a Gemini API Key:**
